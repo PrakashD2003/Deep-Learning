@@ -792,7 +792,7 @@ Let's check the dimensions:
 In NumPy, this is:
 `Z = np.dot(w.T, X) + b`
 
-**What about `b`?** Here, `b` is just a single number (a scalar). [cite_start]When you add it to a matrix in Python, a feature called **broadcasting** automatically expands `b` into a row vector of shape `(1, m)` so it can be added element-wise to the result of `wᵀX`[cite: 655, 1710].
+**What about `b`?** Here, `b` is just a single number (a scalar). When you add it to a matrix in Python, a feature called **broadcasting** automatically expands `b` into a row vector of shape `(1, m)` so it can be added element-wise to the result of `wᵀX`.
 
 #### 2. Computing A for all examples
 Once we have the matrix `Z`, we can compute `A = [a⁽¹⁾, a⁽²⁾, ..., a⁽ᵐ⁾]` by applying the sigmoid function element-wise to the entire `Z` matrix.
@@ -803,8 +803,6 @@ Most libraries, including NumPy, allow you to apply functions like sigmoid to an
 
 With just these two lines of code, we have completed the forward pass for all `m` examples without a single `for` loop.
 
----
-Of course. Let's vectorize the backward pass to complete our efficient, loop-free implementation.
 
 -----
 
@@ -814,27 +812,26 @@ Our goal is to compute the gradients `dw` (a vector) and `db` (a number) average
 
 #### 1\. Computing `dZ` (The Error Matrix)
 
-The first step in the backward pass is to calculate the error, `dz = a - y`, for every example. We can do this in one step using our vectorized `A` and `Y` matrices. [cite: 698]
+The first step in the backward pass is to calculate the error, `dz = a - y`, for every example. We can do this in one step using our vectorized `A` and `Y` matrices. 
 
   * **`dZ = A - Y`**
 
-Since `A` (predictions) and `Y` (true labels) are both of shape `(1, m)`, `dZ` will also be a `(1, m)` matrix containing the error for each example. [cite: 699, 1795]
+Since `A` (predictions) and `Y` (true labels) are both of shape `(1, m)`, `dZ` will also be a `(1, m)` matrix containing the error for each example. 
 
 -----
 
 #### 2\. Computing `db` (The Bias Gradient)
 
-The gradient `db` is the average of all the individual error terms in `dZ`. [cite: 707, 712, 1792]
+The gradient `db` is the average of all the individual error terms in `dZ`. 
 
   * **`db = (1/m) * np.sum(dZ)`**
 
-This one line of code sums up all the elements in the `dZ` matrix and divides by `m` to get the average. [cite: 713, 1793]
-
+This one line of code sums up all the elements in the `dZ` matrix and divides by `m` to get the average. 
 -----
 
 #### 3\. Computing `dw` (The Weights Gradient)
 
-The gradient `dw` is the average of the input `x⁽ⁱ⁾` weighted by its error `dz⁽ⁱ⁾`, for all examples. The vectorized formula for this is: [cite: 716]
+The gradient `dw` is the average of the input `x⁽ⁱ⁾` weighted by its error `dz⁽ⁱ⁾`, for all examples. The vectorized formula for this is: 
 
   * **`dw = (1/m) * X * dZᵀ`**
 
@@ -843,9 +840,9 @@ Let's break down why this works by looking at the matrix shapes:
   * `X` has shape `(nₓ, m)`.
   * `dZ` has shape `(1, m)`.
   * Therefore, `dZᵀ` (the transpose of `dZ`) has shape `(m, 1)`.
-  * The matrix multiplication `X * dZᵀ` has shapes `(nₓ, m) * (m, 1)`, resulting in a vector of shape `(nₓ, 1)`. [cite: 718]
+  * The matrix multiplication `X * dZᵀ` has shapes `(nₓ, m) * (m, 1)`, resulting in a vector of shape `(nₓ, 1)`. 
 
-This is the correct shape for `dw`, and the multiplication correctly computes the weighted average of the gradients for all features. [cite: 719, 1794]
+This is the correct shape for `dw`, and the multiplication correctly computes the weighted average of the gradients for all features. 
 
 -----
 
@@ -865,12 +862,12 @@ A = sigmoid(Z)
 # --- Backward Pass (Vectorized Gradient Computation) ---
 
 # STEP 1: Compute the error matrix dZ
-# [cite_start]This calculates the element-wise error between our prediction (A) and the true label (Y). [cite: 639, 643]
+# This calculates the element-wise error between our prediction (A) and the true label (Y). 
 # The result, dZ, is a matrix of shape (1, m) where each element is the error for one training example.
 dZ = A - Y
 
 # STEP 2: Compute the gradient for the weights (dw)
-# [cite_start]This calculates the derivative of the cost function with respect to the weights 'w'. [cite: 661]
+# This calculates the derivative of the cost function with respect to the weights 'w'. 
 # The formula averages the input features (X) weighted by their corresponding error (dZ).
 # - X has shape (n_x, m)
 # - dZ.T (dZ transposed) has shape (m, 1)
@@ -878,7 +875,7 @@ dZ = A - Y
 dw = (1 / m) * np.dot(X, dZ.T)
 
 # STEP 3: Compute the gradient for the bias (db)
-# [cite_start]This calculates the derivative of the cost function with respect to the bias 'b'. [cite: 657, 658]
+# This calculates the derivative of the cost function with respect to the bias 'b'. 
 # It is simply the average of all the error terms in dZ.
 db = (1 / m) * np.sum(dZ)
 
@@ -897,6 +894,7 @@ We used a feature called "broadcasting" in the forward pass (`+ b`).
 ---
 #### 1. What is Broadcasting?
 ![alt text](image-19.png)
+
 Broadcasting is a powerful mechanism in NumPy that allows you to perform arithmetic operations on arrays of different shapes. Instead of you having to manually reshape or copy the smaller array to match the shape of the larger one, NumPy does this automatically and efficiently behind the scenes.
 
 * **Analogy:** Think of it as "stretching" the smaller array to match the dimensions of the larger one, but without actually using extra memory to make the copies.
