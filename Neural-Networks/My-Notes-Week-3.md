@@ -403,17 +403,163 @@ This is exactly the issue we discussed with sigmoid and tanh:
 * **Effect:** This means the gradients calculated for the *early layers* (close to the input) become vanishingly small. Consequently, the weights in these early layers update extremely slowly, or stop updating altogether. The network fails to learn effectively, especially in its initial layers.
 * **ReLU's Role:** ReLU helps mitigate this because its derivative is 1 for positive inputs, preventing the gradient from shrinking multiplicatively in those cases.
 
+---
+Here are the notes on Gradient Descent for a Neural Network, which is the core training algorithm from Course 1, Week 3.
 
+---
 
+# 📉 **Gradient Descent for Neural Networks**
 
+This is the optimization algorithm we use to train our neural network. It finds the optimal values for the parameters (`W` and `b`) by minimizing the cost function `J`.
 
+### 1️⃣ The Core Idea: The "Gradient Descent" Loop
 
+* **Analogy:** Imagine you are on a foggy hill and want to get to the lowest point (the valley). You can't see far, but you can feel the slope of the ground where you are. You check the slope (the gradient), take a small step in the steepest downhill direction, and repeat.
+* **The Algorithm:** Gradient descent is an iterative process that repeats the following steps:
+    1.  **Initialize** Start with random values for `W[1]` and `W[2]` (not zeros, as this causes symmetry problems) and zeros for `b[1]` and `b[2]`. We'll discuss initialization details later.
+    2.  **Forward Propagation:** Compute the predictions (`A[2]`) for the entire training set.
+    3.  **Compute Cost:** Use the predictions (`A[2]`) and true labels (`Y`) to calculate the cost `J`.
+    4.  **Backpropagation:** Compute the gradients (derivatives) of the cost `J` with respect to all parameters (`dW[1]`, `db[1]`, `dW[2]`, `db[2]`).
+    5.  **Update Parameters:** Adjust the parameters by "taking a step" in the opposite direction of the gradient.
 
+---
 
+![alt text](image-35.png)
 
+### 2️⃣ Step 1: Forward Propagation (Vectorized)
 
+![alt text](image-36.png)
 
+First, we make predictions for all `m` training examples at once using a vectorized implementation.
 
+* `Z[1] = W[1]X + b[1]`
+* `A[1] = g[1](Z[1])` (e.g., `tanh` or `ReLU` activation)
+* `Z[2] = W[2]A[1] + b[2]`
+* `A[2] = g[2](Z[2])` (e.g., `sigmoid` for binary classification)
 
+Here, `A[2]` represents our predictions (`Y_hat`) for the entire batch of examples.
+
+---
+
+### 3️⃣ Step 2: Backpropagation (Vectorized)
+
+This is the most critical step, where we compute the gradients. We move backward through the network, from the output layer to the hidden layer.
+
+![alt text](image-37.png)
+
+#### **Output Layer (Layer 2) Gradients:**
+
+1.  **`dZ[2] = A[2] - Y`**
+    * This is the error in the output layer's `z` calculation. (This formula is specific to the sigmoid activation and its associated loss function).
+2.  **`dW[2] = (1/m) * dZ[2] ⋅ A[1].T`**
+    * This gives us the gradient for the Layer 2 weights. The `.T` denotes the transpose.
+3.  **`db[2] = (1/m) * np.sum(dZ[2], axis=1, keepdims=True)`**
+    * This gives us the gradient for the Layer 2 bias.
+
+#### **Hidden Layer (Layer 1) Gradients:**
+
+1.  **`dZ[1] = (W[2].T ⋅ dZ[2]) * g[1]'(Z[1])`**
+    * This is the core of backpropagation. We take the error from Layer 2 (`dZ[2]`) and propagate it backward (`W[2].T ⋅ dZ[2]`).
+    * We then multiply it (element-wise) by the *derivative of the hidden layer's activation function*, `g[1]'`.
+2.  **`dW[1] = (1/m) * dZ[1] ⋅ X.T`**
+    * This gives us the gradient for the Layer 1 weights.
+3.  **`db[1] = (1/m) * np.sum(dZ[1], axis=1, keepdims=True)`**
+    * This gives us the gradient for the Layer 1 bias.
+
+---
+
+### 4️⃣ Step 3: The Update Step
+
+Finally, we use the computed gradients to update our parameters. `α` (alpha) is the **learning rate**, which controls how big each step is.
+
+* `W[1] = W[1] - α * dW[1]`
+* `b[1] = b[1] - α * db[1]`
+* `W[2] = W[2] - α * dW[2]`
+* `b[2] = b[2] - α * db[2]`
+
+We repeat this entire process many times, and with each iteration, our parameters get better, and the cost `J` goes down.
+
+Okay, let's discuss why **random initialization** is crucial when training neural networks.
+
+---
+# 🎲 Random Initialization
+
+#### 1️⃣ The Problem: Initializing Weights to Zero
+
+Unlike logistic regression where initializing weights to zero is acceptable, doing so in a neural network with hidden layers **prevents the network from learning effectively**.
+
+* **Symmetry Issue:** Consider a simple network with 2 input features and 2 hidden units. If you initialize the weight matrix `W[1]` and the bias `b[1]` to all zeros, both hidden units are connected to the inputs in exactly the same way.
+* **Identical Computations:** Because they start with identical parameters, both hidden units will compute the exact same function during the forward pass (`a[1]1` will always equal `a[1]2`).
+* **Identical Gradients:** During backpropagation, it turns out (due to this symmetry) that both hidden units will also receive the exact same gradient signal (`dz[1]1` will equal `dz[1]2`).
+* **Identical Updates:** Consequently, when you update the weights using gradient descent (`W[1] = W[1] - α * dW[1]`), the updates applied to the weights connected to the first hidden unit will be identical to the updates for the second hidden unit.
+* **No Learning Differentiation:** This symmetry persists through every iteration. No matter how long you train, both hidden units will always compute the same function. It's as if you only have one hidden unit, making the additional units redundant.
+
+This is often called the **symmetry breaking problem**. Initializing to zero fails to "break" the initial symmetry between hidden units in the same layer.
+
+---
+#### 2️⃣ The Solution: Random Initialization
+
+To break this symmetry, we initialize the weights **randomly**, usually to small values close to zero.
+
+* **Weights (W):** Initialize `W[1]`, `W[2]`, etc., using random values drawn from a distribution (like a standard Gaussian `np.random.randn(...)`) and then multiply by a small number (e.g., 0.01).
+    * `W[1] = np.random.randn(n[1], n[0]) * 0.01`
+* **Biases (b):** The biases `b[1]`, `b[2]`, etc., do not suffer from the symmetry problem, so they can safely be initialized to zero.
+    * `b[1] = np.zeros((n[1], 1))`
+
+By starting with slightly different random weights, each hidden unit computes a slightly different function, receives different gradients, and evolves uniquely during training, allowing the network to learn diverse features.
+
+---
+#### 3️⃣ Why *Small* Random Values?
+
+We initialize weights to *small* random numbers to avoid issues with activation functions like **tanh** or **sigmoid**, especially during the early stages of training.
+
+* **Large Weights → Large |z|:** If weights `W` are large, the linear combination `z = Wx + b` is more likely to result in large positive or negative values.
+* **Saturation:** For sigmoid and tanh, large absolute values of `z` fall into the flat parts of the curve where the gradient (slope) is very close to zero.
+* **Slow Learning:** If gradients are near zero, gradient descent updates become tiny, and learning becomes very slow.
+
+Initializing with small random weights helps keep `z` values initially in a range where gradients are larger, allowing learning to proceed more effectively from the start. (While this is less critical for ReLU activations in the hidden layers, it's still relevant if the output layer uses sigmoid).
+
+The specific constant (like 0.01) might need adjustment for very deep networks, a topic explored later.
+
+---
+### 4️⃣ Implementation in Python
+
+Here is the standard way to initialize parameters for a two-layer network.
+
+```python
+# W1 is for the first layer (layer 1)
+# We multiply by 0.01 to make the weights small
+W1 = np.random.randn((n_h, n_x)) * 0.01  #
+
+# b1 can be initialized to zeros
+b1 = np.zeros((n_h, 1)) #
+
+# W2 is for the second layer (output layer)
+W2 = np.random.randn((n_y, n_h)) * 0.01 #
+
+# b2 can be initialized to zeros
+b2 = np.zeros((n_y, 1)) #
+```
+-----
+
+### 5. Why we can Initialize 'b' to Zero:
+
+1.  **Symmetry = Identical Units:** The "symmetry problem" means that all hidden units in a layer are computing the exact same function. If they all start the same and get the same updates, they will always be identical, and you're just computing the same feature multiple times.
+
+2.  **What Makes Units Different?** A unit's computation is `z = Wx + b`. The symmetry is broken if the `z` value is different for each unit in the layer *even when given the same input x*.
+
+3.  **Weights (W) are Multiplicative:** The weights `W` are *multiplied* by the inputs `x`. This is the crucial part.
+    * **If W is zero:** `z = (0 * x) + b = b`. If all `b`'s are also zero, then `z=0` for every unit. They are all symmetric.
+    * **If W is random:** `z = (W_random * x) + b`. Now, even if `b` is zero, the `W_random * x` term will be different for every unit because each unit has its own set of small random weights.
+
+4.  **Biases (b) are Additive:** The bias `b` is just an *offset*. It doesn't interact with the input `x`.
+
+The key insight is this: **The random weights `W` are already doing the job of breaking the symmetry**.
+
+Because the `W` matrix is initialized to small random numbers, each hidden unit is already "looking" at the inputs `x` in a slightly different way from the very first forward pass. Their `z` values will be different, their activations `a` will be different, and their gradients `dW` will be different.
+
+Since the random `W` *already* solves the symmetry problem, there is no need to also initialize `b` randomly. Initializing `b` to zero is simpler, perfectly effective, and has no negative impact because the weights have already made every unit unique.
+
+---
 
 
