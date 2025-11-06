@@ -1,0 +1,665 @@
+Lecture-1
+---
+Welcome to the fourth week of this course. By now, you've seen forward propagation and
+back propagation in the context of a neural network, with a single hidden
+layer, as well as logistic regression, and you've learned about vectorization, and when it's important to
+initialize the ways randomly. If you've done the past couple weeks
+homework, you've also implemented and seen some of these ideas work for
+yourself. So by now, you've actually seen most of the ideas you
+need to implement a deep neural network. What we're going to do this week, is take
+those ideas and put them together so that you'll be able to implement
+your own deep neural network. Because this week's problem
+exercise is longer, it just has been more work,
+I'm going to keep the videos for this week shorter as you can get through
+the videos a little bit more quickly, and then have more time to do a significant
+problem exercise at then end, which I hope will leave you having thoughts deep in
+neural network, that if you feel proud of. So what is a deep neural network? You've seen this picture for
+logistic regression and you've also seen neural networks
+with a single hidden layer. So here's an example of a neural
+network with two hidden layers and a neural network with 5 hidden layers. We say that logistic regression
+is a very "shallow" model, whereas this model here is
+a much deeper model, and shallow versus depth
+is a matter of degree. So neural network of
+a single hidden layer, this would be a 2 layer neural network. Remember when we count layers in a neural
+network, we don't count the input layer, we just count the hidden layers
+as was the output layer. So, this would be a 2 layer neural
+network is still quite shallow, but not as shallow as logistic regression. Technically logistic regression
+is a one layer neural network, we could then, but
+over the last several years the AI, on the machine learning community,
+has realized that there are functions that very deep neural networks can learn that
+shallower models are often unable to. Although for any given problem, it might
+be hard to predict in advance exactly how deep in your network you would want. So it would be reasonable to try
+logistic regression, try one and then two hidden layers, and view the
+number of hidden layers as another hyper parameter that you could try
+a variety of values of, and evaluate on all that across validation
+data, or on your development set. See more about that later as well. Let's now go through the notation we
+used to describe deep neural networks. Here's is a one, two, three,
+four layer neural network, With three hidden layers, and
+the number of units in these hidden layers are I guess 5, 5, 3, and
+then there's one one upper unit. So the notation we're going to use, is going to use capital L ,to denote
+the number of layers in the network. So in this case, L = 4, and so
+does the number of layers, and we're going to use N superscript
+[l] to denote the number of nodes, or the number of units
+in layer lowercase l. So if we index this,
+the input as layer "0". This is layer 1, this is layer 2,
+this is layer 3, and this is layer 4. Then we have that, for example,
+n[1], that would be this, the first is in there will equal 5,
+because we have 5 hidden units there. For this one, we have the n[2], the number of units in
+the second hidden layer is also equal to 5, n[3] = 3, and n[4] = n[L] this number
+of upper units is 01, because your capital L is equal to four, and we're also going to have here that for the input layer n[0] = nx = 3. So that's the notation we use to describe
+the number of nodes we have in different layers. For each layer L, we're also going to use a[l] to denote the activations in layer l. So we'll see later that in for
+propagation, you end up computing a[l] as
+the activation g(z[l]) and perhaps the activation is
+indexed by the layer l as well, and then we'll use W[l ]to denote,
+the weights for computing the value z[l] in layer l, and similarly, b[l] is used to compute z [l]. Finally, just to wrap up on the notation,
+the input features are called x, but x is also the activations
+of layer zero, so a[0] = x, and the activation of the final layer,
+a[L] = y-hat. So a[L] is equal to the predicted output
+to prediction y-hat to the neural network. So you now know what a deep
+neural network looks like, as was the notation we'll use to describe
+and to compute with deep networks. I know we've introduced a lot of notation
+in this video, but if you ever forget what some symbol means, we've also posted
+on the course website, a notation sheet or a notation guide, that you can use to look
+up what these different symbols mean. Next, I'd like to describe what forward
+propagation in this type of network looks like. Let's go into the next video.
+---
+
+Lecture-2
+---
+In the last video, we described what is a deep L-layer neural network
+and also talked about the notation we use to
+describe such networks. In this video, you see how you can
+perform forward propagation, in a deep network. As usual, let's first go over what forward propagation will look like
+for a single training example x, and then later on we'll talk about
+the vectorized version, where you want to carry out
+forward propagation on the entire training set
+at the same time. But given a single training example x, here's how you compute the
+activations of the first layer. So for this first layer, you compute z1 equals w1 times x plus b1. So w1 and b1 are the parameters that
+affect the activations in layer one. This is layer one of the neural network, and then you compute the activations
+for that layer to be equal to g of z1. The activation function g
+depends on what layer you're at and maybe what index set as the
+activation function from layer one. So if you do that, you've now computed
+the activations for layer one. How about layer two? Say that layer. Well, you would then compute z2 equals w2 a1 plus b2. Then, so the activation of layer two is
+the y matrix times the outputs of layer one. So, it's that value, plus the bias vector for layer two. Then a2 equals the activation function
+applied to z2. Okay? So that's it for layer two, and so on and so forth. Until you get to the upper layer,
+that's layer four. Where you would have that z4 is equal to the parameters for that layer times
+the activations from the previous layer, plus that bias vector. Then similarly, a4 equals g of z4. So, that's how you compute your
+estimated output, y hat. So, just one thing to notice, x here is also equal to a0, because the input feature vector x is
+also the activations of layer zero. So we scratch out x. When I cross out x and put a0 here, then all of these equations
+basically look the same. The general rule is that zl is equal to wl times a of l minus 1 plus bl. It's one there. And then, the activations for that layer is the activation function
+applied to the values of z. So, that's the general
+forward propagation equation. So, we've done all this for a
+single training example. How about for doing it in a vectorized way
+for the whole training set at the same time? The equations look quite similar as before. For the first layer, you would
+have capital Z1 equals w1 times capital X plus b1. Then, A1 equals g of Z1. Bear in mind that X is equal to A0. These are just the training examples
+stacked in different columns. You could take this, let me scratch out X, they can put A0 there. Then for the next layer, looks similar, Z2 equals w2 A1 plus b2 and A2 equals g of Z2. We're just taking these
+vectors z or a and so on, and stacking them up. This is z vector for the
+first training example, z vector for the
+second training example, and so on, down to the
+nth training example, stacking these and columns
+and calling this capital Z. Similarly, for capital A, just as capital X. All the training examples are
+column vectors stack left to right. In this process, you end up with
+y hat which is equal to g of Z4, this is also equal to A4. That's the predictions on all of your
+training examples stacked horizontally. So just to summarize on notation, I'm going to modify this up here. A notation allows us to replace lowercase z
+and a with the uppercase counterparts, is that already looks like a capital Z. That gives you the vectorized version of forward propagation that you carry out
+on the entire training set at a time, where A0 is X. Now, if you look at this
+implementation of vectorization, it looks like that there is
+going to be a For loop here. So therefore l equals 1-4. For L equals 1 through capital L. Then you
+have to compute the activations for layer one, then layer two, then for layer three, and then the layer four. So, seems that there is a For loop here. I know that when implementing
+neural networks, we usually want to get rid of
+explicit For loops. But this is one place where I don't think there's any way to implement this
+without an explicit For loop. So when implementing forward propagation, it is perfectly okay to have a For loop
+to compute the activations for layer one, then layer two, then layer three,
+then layer four. No one knows, and I don't think
+there is any way to do this without a For loop that
+goes from one to capital L, from one through the total number of
+layers in the neural network. So, in this place, it's perfectly
+okay to have an explicit For loop. So, that's it for the notation
+for deep neural networks, as well as how to do forward propagation
+in these networks. If the pieces we've seen so far
+looks a little bit familiar to you, that's because what we're seeing is taking
+a piece very similar to what you've seen in the neural network with a single hidden
+layer and just repeating that more times. Now, it turns out that we implement
+a deep neural network, one of the ways to increase your
+odds of having a bug-free implementation is to think very systematic and carefully about the matrix
+dimensions you're working with. So, when I'm trying to debug my own code, I'll often pull a piece of paper, and just think carefully through, so the dimensions of the
+matrix I'm working with. Let's see how you could
+do that in the next video.
+---
+
+Lecture-3
+---
+When implementing a
+deep neural network, one of the debugging
+tools I often use to check the
+correctness of my code is to pull a piece
+of paper and just work through the dimensions
+in matrix I'm working with. Let me show you how to do
+that since I hope this will make it easier for you to implement your deep
+networks as well. So capital L is equal to 5. I counted them quickly. Not counting the input layer, there are five layers here, four hidden layers
+and one output layer. If you implement
+forward propagation, the first step will be Z1 equals W1 times the input
+features x plus b1. Let's ignore the bias terms B for now and focus on
+the parameters W. Now, this first hidden layer
+has three hidden units. So this is Layer 0, Layer 1, Layer 2, Layer 3, Layer 4, and Layer 5. Using the notation we had
+from the previous video, we have that n1, which is the number of hidden
+units in layer 1, is equal to 3. Here we would have
+that n2 is equal to 5, n3 is equal to 4, n4 is equal to 2, and n5 is equal to 1. So far we've only seen neural networks with
+a single output unit, but in later courses
+we'll talk about neural networks with multiple
+output units as well. Finally, for the input layer, we also have n0 equals
+nX is equal to 2. Now, let's think about the
+dimensions of Z, W, and X. Z is the vector of activations for this first hidden layer. So Z is going to be 3 by 1, is going to be a
+three-dimensional vector. I'm going to write it as, n1
+by one-dimensional matrix, 3 by 1 in this case. Now, how about the
+input features x? X we have two input features. So x is, in this example, 2 by 1, but more generally
+it'll be n0 by 1. What we need is for the
+matrix W1 to be something that when we multiply an
+n0 by 1 vector to it, we get an n1 by 1 vector. So you have a
+three-dimensional vector equals something times a
+two-dimensional vector. By the rules of matrix
+multiplication, this has got to be
+a 3 by 2 matrix. Because a 3 by 2
+matrix times a 2 by 1 matrix or times
+a 2 by 1 vector, that gives you a 3 by 1 vector. More generally,
+this is going to be an n1 by n0 dimensional matrix. So what we figured out here
+is that the dimensions of W1 has to be n1 by n0, and more generally,
+the dimensions of WL must be nL by nL minus 1. For example, the
+dimensions of W2, for this, it will
+have to be 5 by 3, or it will be n2 by n1, because we're going
+to compute Z2 as W2 times a1. Again, let's ignore
+the bias for now. This is going to be 3 by 1. We need this to be 5 by 1. So this had better be 5 by 3. Similarly, W3 is really the
+dimension of the next layer, the dimension of
+the previous layer. So this is going to be 4 by 5. W4 is going to be 2 by 4, and W5 is going to be 1 by 2. The general formula to
+check is that when you're implementing the
+matrix for a layer L, that the dimension of that
+matrix be nL by nL minus 1. Now, let's think about the
+dimension of this vector B. This is going to be
+a 3 by 1 vector, so you have to add
+that to another 3 by 1 vector in order to get a 3
+by 1 vector as the output. This was going to be 5 by 1, so there's going to be
+another 5 by 1 vector in order for the sum of these two things that
+I have in the boxes to be itself a 5 by 1 vector. The more general rule is that
+in the example on the left, b^[1] is n^[1] by 1, like this 3 by 1. In the second example, it is this is n^[2] by 1 and so the more general
+case is that b^[l] should be n^[l]
+by 1 dimensional. Hopefully, these two
+equations help you to double-check that the
+dimensions of your matrices, w, as well as of your vectors b are the
+correct dimensions. Of course, if you're
+implementing back-propagation, then the dimensions of dw should be the
+same as dimension of w. So dw should be the
+same dimension as w, and db should be the
+same dimension as b. Now, the other key
+set of quantities whose dimensions to
+check are these z, x, as well as a of l, which we didn't talk
+too much about here. But because z of l is
+equal to g of a of l, apply element-wise then z and a should have the same dimension in these types of networks. Now, let's see what
+happens when you have a vectorized implementation that looks at multiple
+examples at a time. Even for a vectorized
+implementation, of course, the dimensions of w, b, dw, and db will
+stay the same. But the dimensions of za, as well as x, will change a bit in your vectorized
+implementation. Previously we had z^[1] equals w^[1] times x plus b^]1], where this was n^[1] by 1. This was n^[1] by n^[0], x was n^[0] by 1, and b was n^[1] by 1. Now, in a vectorized
+implementation, you would have z^[1] equals
+w^[1] times x plus b^[1]. Where now z^[1] is obtained by taking the z^[1] for the
+individual examples. So there's z^[1][1],
+z^[1][2] up to z^[1][m] and stacking them as follows
+and this gives you z^[1]. The dimension of z^[1] is that instead of being n^[1] by 1, it ends up being n^[1] by m, if m is decisive training set. The dimensions of
+w^[1] stays the same so is the n^[1] by n^[0] and x instead of being n^[0] by 1 is now all your training
+examples stamped horizontally, so it's now n^[0] by m. You
+notice that when you take a, n^[1] by n^[0] matrics and multiply that by an
+n^[0] by m matrics that together they
+actually give you an n^[1] by m dimensional
+matrics as expected. Now the final detail is that
+b^[1] is still n^[1] by 1. But when you take
+this and add it to b, then through python broadcasting
+this will get duplicated into an n^[1] by m matrics
+and then added element-wise. On the previous slide, we talked about the
+dimensions of w, b, dw, and db. Here what we see is
+that whereas z^[l], as well as a^[l], are of dimension n^[l] by 1, we have now instead
+that capital Z^[l], as well as capital A^[l], are n^[l] by m. A special case of this
+is when l is equal to 0, in which case A^[0], which is equal to
+just your training set input features x is going to be equal to n^[0]
+by m as expected. Of course, when you're implementing this in
+back-propagation, we'll see later you end up
+computing dz as well as da. This way, of course, has the
+same dimension as z and a. Hope the low exercise
+went through helps clarify the dimensions of the various matrices
+you'll be working with. When you implement
+back-propagation for a deep neural network, so long as you work through
+your code and make sure that all the matrices or
+dimensions are consistent, that will usually
+help you go some ways towards eliminating some
+class of possible bugs. I hope that exercise
+for figuring out the dimensions of
+the various matrices you'd be working
+with is helpful. When you implement a deep neural network if you keep straight the dimensions of
+these various matrices and vectors you're working with, hopefully, that will
+help you eliminate some class of possible bugs. It certainly helps me
+get my code right. Next, we've now seen
+some of the mechanics of how to do the forward
+propagation in a neural network. But why are deep neural
+networks so effective and why do they do better than
+shallow representations? Let's spend a few minutes in
+the next video to discuss.
+---
+
+
+Lecture-4
+---
+We've all been hearing that deep
+neural networks work really well for a lot of problems, and it's not just that
+they need to be big neural networks, is that specifically, they need to be
+deep or to have a lot of hidden layers. So why is that? Let's go through a couple examples and
+try to gain some intuition for why deep networks might work well. So first,
+what is a deep network computing? If you're building a system for
+face recognition or face detection, here's what a deep
+neural network could be doing. Perhaps you input a picture of a face then
+the first layer of the neural network you can think of as maybe being
+a feature detector or an edge detector. In this example, I'm plotting what a
+neural network with maybe 20 hidden units, might be trying to compute on this image. So the 20 hidden units visualized
+by these little square boxes. So for example, this little visualization
+represents a hidden unit that's trying to figure out where the edges
+of that orientation are in the image. And maybe this hidden unit
+might be trying to figure out where are the horizontal
+edges in this image. And when we talk about convolutional
+networks in a later course, this particular visualization
+will make a bit more sense. But the form, you can think of the first layer
+of the neural network as looking at the picture and trying to figure out
+where are the edges in this picture. Now, let's think about where the edges
+in this picture by grouping together pixels to form edges. It can then detect the edges and group
+edges together to form parts of faces. So for example, you might have a low
+neuron trying to see if it's finding an eye, or a different neuron trying
+to find that part of the nose. And so by putting together lots of edges, it can start to detect
+different parts of faces. And then, finally, by putting
+together different parts of faces, like an eye or a nose or an ear or
+a chin, it can then try to recognize or detect different types of faces. So intuitively, you can think of the
+earlier layers of the neural network as detecting simple functions, like edges. And then composing them together in
+the later layers of a neural network so that it can learn more and
+more complex functions. These visualizations will make more sense
+when we talk about convolutional nets. And one technical detail
+of this visualization, the edge detectors are looking in
+relatively small areas of an image, maybe very small regions like that. And then the facial detectors you can look
+at maybe much larger areas of image. But the main intuition you take away
+from this is just finding simple things like edges and then building them up. Composing them together to detect
+more complex things like an eye or a nose then composing those together to
+find even more complex things. And this type of simple to complex
+hierarchical representation, or compositional representation, applies in other types of data than
+images and face recognition as well. For example, if you're trying to
+build a speech recognition system, it's hard to revisualize speech but if you input an audio clip then maybe
+the first level of a neural network might learn to detect low level audio wave form
+features, such as is this tone going up? Is it going down? Is it white noise or
+sniffling sound like [SOUND]. And what is the pitch? When it comes to that, detect low
+level wave form features like that. And then by composing
+low level wave forms, maybe you'll learn to detect
+basic units of sound. In linguistics they call phonemes. But, for example, in the word cat,
+the C is a phoneme, the A is a phoneme, the T is another phoneme. But learns to find maybe
+the basic units of sound and then composing that together maybe
+learn to recognize words in the audio. And then maybe compose those together, in order to recognize entire phrases or
+sentences. So deep neural network with multiple hidden
+layers might be able to have the earlier layers learn these lower
+level simple features and then have the later deeper layers then put
+together the simpler things it's detected in order to detect more complex things
+like recognize specific words or even phrases or sentences. The uttering in order to
+carry out speech recognition. And what we see is that whereas the other
+layers are computing, what seems like relatively simple functions of the input
+such as where the edge is, by the time you get deep in the network you can
+actually do surprisingly complex things. Such as detect faces or
+detect words or phrases or sentences. Some people like to make an analogy
+between deep neural networks and the human brain, where we believe,
+or neuroscientists believe, that the human brain also starts off
+detecting simple things like edges in what your eyes see then builds those
+up to detect more complex things like the faces that you see. I think analogies between
+deep learning and the human brain are sometimes
+a little bit dangerous. But there is a lot of truth to, this being
+how we think that human brain works and that the human brain probably
+detects simple things like edges first then put them together to from more and
+more complex objects and so that has served as a loose form of inspiration
+for some deep learning as well. We'll see a bit more
+about the human brain or about the biological brain in
+a later video this week. The other piece of intuition
+about why deep networks seem to work well is the following. So this result comes from circuit
+theory of which pertains the thinking about what types of functions you can
+compute with different AND gates, OR gates,
+NOT gates, basically logic gates. So informally, their functions compute
+with a relatively small but deep neural network and by small I mean the number
+of hidden units is relatively small. But if you try to compute the same
+function with a shallow network, so if there aren't enough hidden layers, then you might require exponentially
+more hidden units to compute. So let me just give you one example and
+illustrate this a bit informally. But let's say you're trying to
+compute the exclusive OR, or the parity of all your input features. So you're trying to compute X1,
+XOR, X2, XOR, X3, XOR, up to Xn if you have n or
+n X features. So if you build in XOR tree like this,
+so for us it computes the XOR of X1 and X2, then take X3 and
+X4 and compute their XOR. And technically, if you're just using
+AND or NOT gate, you might need a couple layers to compute the XOR
+function rather than just one layer, but with a relatively small circuit,
+you can compute the XOR, and so on. And then you can build,
+really, an XOR tree like so, until eventually, you have a circuit here
+that outputs, well, lets call this Y. The outputs of Y hat equals Y. The exclusive OR,
+the parity of all these input bits. So to compute XOR, the depth of the
+network will be on the order of log N. We'll just have an XOR tree. So the number of nodes or
+the number of circuit components or the number of gates in this
+network is not that large. You don't need that many gates in
+order to compute the exclusive OR. But now, if you are not allowed to
+use a neural network with multiple hidden layers with, in this case,
+order log and hidden layers, if you're forced to compute this
+function with just one hidden layer, so you have all these things going into
+the hidden units. And then these things then output Y. Then in order to compute this
+XOR function, this hidden layer will need to be exponentially large,
+because essentially, you need to exhaustively enumerate our
+2 to the N possible configurations. So on the order of 2 to the N,
+possible configurations of the input bits that result in the exclusive OR
+being either 1 or 0. So you end up needing a hidden layer
+that is exponentially large in the number of bits. I think technically, you could do this
+with 2 to the N minus 1 hidden units. But that's the older 2 to the N, so it's going to
+be exponentially larger on the number of bits. So I hope this gives a sense that
+there are mathematical functions, that are much easier to compute with deep
+networks than with shallow networks. Actually, I personally found the result
+from circuit theory less useful for gaining intuitions, but this is
+one of the results that people often cite when explaining the value of
+having very deep representations. Now, in addition to this reasons for preferring deep neural networks,
+to be perfectly honest, I think the other reasons the term deep
+learning has taken off is just branding. This things just we call neural
+networks with a lot of hidden layers, but the phrase deep learning is just
+a great brand, it's just so deep. So I think that once that term caught on
+that really neural networks rebranded or neural networks with many
+hidden layers rebranded, help to capture the popular
+imagination as well. But regardless of the PR branding,
+deep networks do work well. Sometimes people go overboard and
+insist on using tons of hidden layers. But when I'm starting out a new problem,
+I'll often really start out with even logistic regression then
+try something with one or two hidden layers and
+use that as a hyper parameter. Use that as a parameter or hyper parameter
+that you tune in order to try to find the right depth for your neural network. But over the last several years there has
+been a trend toward people finding that for some applications, very, very deep
+neural networks here with maybe many dozens of layers sometimes, can sometimes
+be the best model for a problem. So that's it for the intuitions for
+why deep learning seems to work well. Let's now take a look at the mechanics
+of how to implement not just front propagation, but also back propagation.
+---
+
+
+Lecture-5
+---
+In the earlier videos from this week, as well as from the videos
+from the past several weeks, you've already seen the basic building
+blocks of forward propagation and back propagation, the key components you
+need to implement a deep neural network. Let's see how you can put these components
+together to build your deep net. Here's a network of a few layers. Let's pick one layer. And look into the computations
+focusing on just that layer for now. So for layer L,
+you have some parameters wl and bl and for the forward prop, you will input the activations a l-1
+from your previous layer and output a l. So the way we did this
+previously was you compute z l = w l times al - 1 + b l. And then al = g of z l. All right. So, that's how you go from the input
+al minus one to the output al. And, it turns out that for later use it'll
+be useful to also cache the value zl. So, let me include this on cache as
+well because storing the value zl would be useful for backward, for
+the back propagation step later. And then for the backward step or for
+the back propagation step, again, focusing on computation for this layer l, you're going to implement
+a function that inputs da(l). And outputs da(l-1), and
+just to flesh out the details, the input is actually da(l),
+as well as the cache so you have available to you the value
+of zl that you computed and then in addition, outputing da(l)
+minus 1 you bring the output or the gradients you want in order
+to implement gradient descent for learning, okay? So this is the basic structure of
+how you implement this forward step, what we call the forward function
+as well as this backward step, which we'll call backward function. So just to summarize, in layer l, you're going to have the forward step or
+the forward prop of the forward function. Input al- 1 and output, al, and in order to make this computation
+you need to use wl and bl. And also output a cache,
+which contains zl, right? And then the backward function,
+using the back prop step, will be another function that now inputs da(l) and outputs da(l-1). So it tells you, given the derivatives
+respect to these activations, that's da(l), what are the derivatives? How much do I wish? You know, al- 1 changes the computed
+derivatives respect to deactivations from a previous layer. Within this box, right? You need to use wl and bl, and
+it turns out along the way you end up computing dzl, and then this box, this backward function
+can also output dwl and dbl, but I was sometimes using red arrows
+to denote the backward iteration. So if you prefer,
+we could draw these arrows in red. So if you can implement
+these two functions then the basic computation of
+the neural network will be as follows. You're going to take the input
+features a0, feed that in, and that would compute the activations of
+the first layer, let's call that a1 and to do that, you need a w1 and
+b1 and then will also, you know, cache away z1, right? Now having done that, you feed that to
+the second layer and then using w2 and b2, you're going to compute deactivations
+in the next layer a2 and so on. Until eventually, you end up outputting a l which is equal to y hat. And along the way,
+we cached all of these values z. So that's the forward propagation step. Now, for the back propagation step,
+what we're going to do will be a backward sequence of iterations in which you are going backwards and
+computing gradients like so. So what you're going to feed in here,
+da(l) and then this box will give us da(l- 1) and
+so on until we get da(2) da(1). You could actually get one more
+output to compute da(0) but this is derivative with respect to your input features, which is
+not useful at least for training the weights of these
+supervised neural networks. So you could just stop it there. But
+along the way, back prop also ends up outputting dwl,
+dbl. I just used the prompt as wl and bl. This would output dw3, db3 and so on. So you end up computing all
+the derivatives you need. And so just to maybe fill in
+the structure of this a little bit more, these boxes will use
+those parameters as well. wl, bl and it turns out that we'll see later that inside these boxes
+we end up computing the dz's as well. So one iteration of training through
+a neural network involves: starting with a(0) which is x and
+going through forward prop as follows. Computing y hat and
+then using that to compute this and then back prop, right, doing that and now you have all these derivative
+terms and so, you know, w would get updated as w1 =
+the learning rate times dw, right? For each of the layers and
+similarly for b rate. Now the computed back prop
+have all these derivatives. So that's one iteration of gradient
+descent for your neural network. Now before moving on,
+just one more informational detail. Conceptually, it will be useful
+to think of the cache here as storing the value of z for
+the backward functions. But when you implement this, and
+you see this in the programming exercise, When you implement this,
+you find that the cache may be a convenient way to get to this
+value of the parameters of w1, b1, into the backward function as well.
+So for this exercise you actually store in your
+cache to z as well as w and b. So this stores z2, w2, b2.
+But from an implementation standpoint, I just find it a convenient way
+to just get the parameters, copy to where you need to use them later
+when you're computing back propagation. So that's just an implementational
+detail that you see when you do the programming exercise. So you've now seen what
+are the basic building blocks for implementing a deep neural network. In each layer there's
+a forward propagation step and there's a corresponding
+backward propagation step. And has a cache to pass
+information from one to the other. In the next video, we'll talk about how you can actually
+implement these building blocks. Let's go on to the next video.
+---
+
+
+Lecture-6
+---
+In a previous video, you saw the basic blocks of implementing
+a deep neural network, a forward propagation step for each layer and a corresponding
+backward propagation step. Let's see how you can actually
+implement these steps. We'll start with
+forward propagation. Recall that what this will
+do is input a^l minus 1, and outputs a^l and
+the cache, z^l. We just said that, from
+implementational point of view, maybe we'll cache
+w^l and b^l as well, just to make the
+function's call a bit easier in the
+program exercise. The equations for this should
+already look familiar. The way to implement a forward
+function is just this, equals w^l times a^l
+minus 1 plus b^l, and then a^l equals the
+activation function applied to z. If you want a vectorized
+implementation, then it's just that times
+a^l minus 1 plus b, b being a Python broadcasting, and a^l equals g, applied element-wise to z. You remember, on the
+diagram for the 4th step, remember we had this chain
+of boxes going forward, so you initialize
+that with feeding in a^0, which is equal to x. So you initialize this with, what is the input
+to the first one? It's really a^0,
+which is the input features either for
+one training example if you're doing one
+example at a time, or a^0 if you're processing
+the entire training set. That's the input to the first forward
+function in the chain, and then just repeating
+this allows you to compute forward propagation
+from left to right. Next, let's talk about the
+backward propagation step. Here, your goal
+is to input da^l, and output da^l minus
+1 and dw^l and db^l. Let me just write out the steps you need to
+compute these things. Dz^l is equal to da^l
+element-wise product, with g of l prime z of l. Then to compute
+the derivatives, dw^l equals dz^l
+times a of l minus 1. I didn't explicitly
+put that in the cache, but it turns out you
+need this as well. Then db^l is equal to
+dz^l, and finally, da of l minus 1 is equal to w^l transpose times dz^l. I don't want to go through the detailed
+derivation for this, but it turns out that if
+you take this definition for da and plug it in here, then you get the same formula as we had in there previously, for how you compute dz^l as a function of
+the previous dz^l. In fact, well, if I
+just plug that in here, you end up that dz^l is equal to w^l plus 1 transpose dz^l plus 1 times g^l prime z of l. I know this looks
+like a lot of algebra. You could actually
+double-check for yourself that this
+is the equation we had written down for
+back propagation last week, when we were doing
+a neural network with just a single hidden layer. As a reminder, this times
+is element-wise product, so all you need is those four equations to implement
+your backward function. Then finally, I'll just write
+out a vectorized version. So the first line becomes dz^l equals da^l element-wise
+product with g^l prime of z^l, maybe no surprise there. Dw^l becomes 1 over m, dz^l times a^l
+minus 1 transpose. Then db^l becomes 1
+over m np.sum dz^l. Then axis equals 1,
+keepdims equals true. We talked about the use of np.sum in the previous
+week, to compute db. Then finally, da^l minus
+1 is w^l transpose times dz of l. This allows you to input this
+quantity, da, over here. Output dW^l, dp^l, the
+derivatives you need, as well as da^l
+minus 1 as follows. That's how you implement
+the backward function. Just to summarize,
+take the input x, you may have the
+first layer maybe has a ReLU activation function. Then go to the second layer, maybe uses another ReLU
+activation function, goes to the third
+layer maybe has a sigmoid activation function if you're doing binary
+classification, and this outputs y-hat. Then using y-hat, you
+can compute the loss. This allows you to start
+your backward iteration. I'll draw the arrows first. I guess I don't have to
+change pens too much. Where you will then have backprop compute
+the derivatives, compute dW^3, db^3, dW^2, db^2, dW^1, db^1. Along the way you would be
+computing against the cash. We'll transfer z^1, z^2, z^3. Here you pass backwards
+da^2 and da^1. This could compute da^0, but we won't use that so
+you can just discard that. This is how you implement
+forward prop and back prop for a three-layer neural network. There's this one last
+detail that I didn't talk about which is for the
+forward recursion, we will initialize it
+with the input data x. How about the
+backward recursion? Well it turns out that da of l when you're using
+logistic regression, when you're doing
+binary classification is equal to y over a plus 1 minus y over 1 minus a. It turns out that the derivative of the loss function respect to the output with respect to y-hat can be shown
+to be what it is. If you're familiar
+with calculus, if you look up the
+loss function l and take derivatives with respect
+to y-hat with respect to a, you can show that you
+get that formula. This is the formula
+you should use for da, for the final layer, capital L. Of course if you were to have a vectorized
+implementation, then you initialize the backward recursion,
+not with this, but with da capital A for the layer L which is going to be the same thing for the
+different examples. Over a for the first train
+example plus 1 minus y for the first
+train example over 1 minus A for the
+first train example, dot-dot-dot down to
+the nth train example. So 1 minus a of M. That's how you'd implement the
+vectorized version. That's how you initialize the vectorized version
+of back propagation. We've now seen the basic
+building blocks of both forward propagation as
+well as back propagation. Now if you implement
+these equations, you will get the correct
+implementation of forward prop and backprop to get you the
+derivatives you need. You might be thinking, well
+those are a lot of equations. I'm slightly confused.
+I'm not quite sure I see how this works and if
+you're feeling that way, my advice is when you get to this week's
+programming assignment, you will be able to
+implement these for yourself and they will
+be much more concrete. I know those are a
+lot of equations, and maybe some of the equations didn't make complete sense, but if you work through the calculus and the linear
+algebra which is not easy, so feel free to try, but that's actually
+one of the more difficult derivations
+in machine learning. It turns out the equations
+we wrote down are just the calculus equations for computing the derivatives, especially in backprop,
+but once again, if this feels a
+little bit abstract, a little bit mysterious to you, my advice is when you've done
+the programming exercise, it will feel a bit
+more concrete to you. Although I have to say, even today when I implement
+a learning algorithm, sometimes even I'm
+surprised when my learning algorithm
+implementation works and it's because a lot of the complexity of machine learning comes from the data rather than
+from the lines of codes. Sometimes you feel like you implement a
+few lines of code, not quite sure what it did, but it almost magically works, and it's because a lot of
+magic is actually not in the piece of code you write
+which is often not too long. It's not exactly simple, but it's not 10,000, 100,000 lines of code, but you feed it
+so much data that sometimes even though I've worked with machine
+learning for a long time, sometimes it still surprises me a bit when my learning
+algorithm works, because a lot of
+the complexity of your learning algorithm
+comes from the data rather than necessarily from you writing thousands and
+thousands of lines of code. That's how you implement
+deep neural networks. Again this will become more concrete when you've done
+the programming exercising. Before moving on,
+in the next video, I want to discuss
+hyper-parameters and parameters. It turns out that when
+you're training deep nets, being able to organize
+your hyper-parameters well will help you be more efficient in developing your networks. In the next video, let's talk about exactly what that means.
+---
+
+
+Lecture-7
+---
+Being effective in developing your deep Neural Nets requires that you not only organize your parameters well but also your hyper parameters. So what are hyper parameters? let's take a look! So the parameters your model are W and B and there are other things you need to tell your learning algorithm, such as the learning rate alpha, because we need to set alpha and that in turn will determine how your parameters evolve or maybe the number of iterations of gradient descent you carry out. Your learning algorithm has oth numbers that you need to set such as the number of hidden layers, so we call that capital L, or the number of hidden units, such as 0 and 1 and 2 and so on. Then you also have the choice of activation function. do you want to use a RELU, or tangent or a sigmoid function especially in the hidden layers. So all of these things are things that you need to tell your learning algorithm and so these are parameters that control the ultimate parameters W and B and so we call all of these things below hyper parameters. Because these things like alpha, the learning rate, the number of iterations, number of hidden layers, and so on, these are all parameters that control W and B. So we call these things hyper parameters, because it is the hyper parameters that somehow determine the final value of the parameters W and B that you end up with. In fact, deep learning has a lot of different hyper parameters. In the later course, we'll see other hyper parameters as well such as the momentum term, the mini batch size, various forms of regularization parameters, and so on. If none of these terms at the bottom make sense yet, don't worry about it! We'll talk about them in the second course. Because deep learning has so many hyper parameters in contrast to earlier errors of machine learning, I'm going to try to be very consistent in calling the learning rate alpha a hyper parameter rather than calling the parameter. I think in earlier eras of machine learning when we didn't have so many hyper parameters, most of us used to be a bit slow up here and just call alpha a parameter. Technically, alpha is a parameter, but is a parameter that determines the real parameters. I'll try to be consistent in calling these things like alpha, the number of iterations, and so on hyper parameters. So when you're training a deep net for your own application you find that there may be a lot of possible settings for the hyper parameters that you need to just try out. So applying deep learning today is a very intrictate process where often you might have an idea. For example, you might have an idea for the best value for the learning rate. You might say, well maybe alpha equals 0.01 I want to try that. Then you implement, try it out, and then see how that works. Based on that outcome you might say, you know what? I've changed online, I want to increase the learning rate to 0.05. So, if you're not sure what the best value for the learning rate to use. You might try one value of the learning rate alpha and see their cost function j go down like this, then you might try a larger value for the learning rate alpha and see the cost function blow up and diverge. Then, you might try another version and see it go down really fast. it's inverse to higher value. You might try another version and see the cost function J do that then. I'll be trying to set the values. So you might say, okay looks like this the value of alpha. It gives me a pretty fast learning and allows me to converge to a lower cost function j and so I'm going to use this value of alpha. You saw in a previous slide that there are a lot of different hybrid parameters. It turns out that when you're starting on the new application, you should find it very difficult to know in advance exactly what is the best value of the hyper parameters. So, what often happens is you just have to try out many different values and go around this cycle your try out some values, really try five hidden layers. With this many number of hidden units implement that, see if it works, and then iterate. So the title of this slide is that applying deep learning is a very empirical process, and empirical process is maybe a fancy way of saying you just have to try a lot of things and see what works. Another effect I've seen is that deep learning today is applied to so many problems ranging from computer vision, to speech recognition, to natural language processing, to a lot of structured data applications such as maybe a online advertising, or web search, or product recommendations, and so on. What I've seen is that first, I've seen researchers from one discipline, any one of these, and try to go to a different one. And sometimes the intuitions about hyper parameters carries over and sometimes it doesn't, so I often advise people, especially when starting on a new problem, to just try out a range of values and see what w. In the next course we'll see some systematic ways for trying out a range of values. Second, even if you're working on one application for a long time, you know maybe you're working on online advertising, as you make progress on the problem it is quite possible that the best value for the learning rate, a number of hidden units, and so on might change. So even if you tune your system to the best value of hyper parameters today it's possible you'll find that the best value might change a year from now maybe because the computer infrastructure, be it you know CPUs, or the type of GPU running on, or something has changed. So maybe one rule of thumb is every now and then, maybe every few months, if you're working on a problem for an extended period of time for many years just try a few values for the hyper parameters and double check if there's a better value for the hyper parameters. As you do so you slowly gain intuition as well about the hyper parameters that work best for your problems. I know that this might seem like an unsatisfying part of deep learning that you just have to try on all the values for these hyper parameters, but maybe this is one area where deep learning research is still advancing, and maybe over time we'll be able to give better guidance for the best hyper parameters to use. It's also possible that because CPUs and GPUs and networks and data sets are all changing, and it is possible that the guidance won't converge for some time. You just need to keep trying out different values and evaluate them on a hold on cross-validation set or something and pick the value that works for your problems. So that was a brief discussion of hyper parameters. In the second course, we'll also give some suggestions for how to systematically explore the space of hyper parameters but by now you actually have pretty much all the tools you need to do their programming exercise before you do that adjust or share view one more set of ideas which is I often ask what does deep learning have to do the human brain?
+---
+
+
+Lecture-8
+---
+So what does deep learning
+have to do with the brain? At the risk of giving away the punchline I would
+say, not a whole lot, but let's take a quick look
+at why people keep making the analogy between deep
+learning and the human brain. When you implement
+a neural network, this is what you do, forward prop and back prop. I think because it's
+been difficult to convey intuitions about what
+these equations are doing, really creating the sense
+on a very complex function, the analogy that it's
+like the brain has become an oversimplified
+explanation for what this is doing. But the simplicity of
+this makes it seductive for people to just say it publicly as well as for
+media to report it, and it is certainly called
+the popular imagination. There is a very loose
+analogy between, let's say, a logistic regression unit with a sigmoid
+activation function. Here's a cartoon of a
+single neuron in the brain. In this picture of a biological
+neuron, this neuron, which is a cell in your brain, receives electric signals
+from other neurons, X1, X2, X3, or maybe from
+other neurons, A1, A2, A3, does a simple
+thresholding computation, and then if this neuron fires, it sends a pulse of
+electricity down the axon, down this long wire, perhaps to other neurons. There is a very
+simplistic analogy between a single neuron
+in a neural network, and a biological neuron like
+that shown on the right. But I think that today
+even neuroscientists have almost no idea what even
+a single neuron is doing. A single neuron appears
+to be much more complex than we are able to
+characterize with neuroscience, and while some of what it's doing is a little bit
+like logistic regression, there's still a lot about
+what even a single neuron does that no one human
+today understands. For example, exactly
+how neurons in the human brain learns is still a very mysterious process, and it's completely
+unclear today whether the human brain
+uses an algorithm, does anything like
+back propagation or gradient descent
+or if there's some fundamentally different
+learning principle that the human brain uses. When I think of deep-learning, I think of it as being very good and learning very
+flexible functions, very complex functions,
+to learn X to Y mappings, to learn input-output mappings
+in supervised learning. Whereas this is like
+the brain analogy, maybe that was useful once, I think the field has moved to the point where that
+analogy is breaking down, and I tend not to use that
+analogy much anymore. So that's it for neural
+networks and the brain. I do think that
+maybe the field of computer vision has taken a bit more inspiration
+from the human brain than other disciplines that
+also apply deep learning, but I personally use the analogy to the human
+brain less than I used to. That's it for this video. You now know how to implement
+forward prop and back prop and gradient descent even
+for deep neural networks. Best of luck with the
+programming exercise, and I look forward
+to sharing more of these ideas with you
+in the second course.
+---
