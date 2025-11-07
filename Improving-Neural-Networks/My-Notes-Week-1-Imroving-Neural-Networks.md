@@ -180,6 +180,7 @@ First, let's look at the simpler case of logistic regression.
     J(w, b) = \frac{1}{m} \sum_{i=1}^{m} \mathcal{L}(\hat{y}^{(i)}, y^{(i)}) + \frac{\lambda}{2m} ||w||_2^2
     $$
 
+
 Let's break down the new term:
 * **$||w||_2^2$**: This is the **L2 norm** (or squared Euclidean norm) of the weight vector $w$. It's just the sum of the squares of all the elements in $w$: $||w||_2^2 = \sum_{j=1}^{n_x} w_j^2 = w^T w$.
 * **$\lambda$ (lambda)**: This is the **regularization hyperparameter**. It's a new hyperparameter that you have to tune. It controls how much you penalize the weights.
@@ -195,7 +196,10 @@ We apply the same idea to a full neural network. The new cost function $J$ is th
 * **New Cost Function:**
     $$
     J(W^{[1]}, b^{[1]}, ..., W^{[L]}, b^{[L]}) = \underbrace{\frac{1}{m} \sum_{i=1}^{m} \mathcal{L}(\hat{y}^{(i)}, y^{(i)})}_{\text{Original Cost } J(W,b)} + \underbrace{\frac{\lambda}{2m} \sum_{l=1}^{L} ||W^{[l]}||_F^2}_{\text{L2 Regularization Term}}
-    $$      
+    $$
+
+![alt text](image-18.png)
+
 * **$||W^{[l]}||_F^2$**: This is the **Frobenius norm** (squared) of the weight matrix $W^{[l]}$. It's simply the sum of the squares of all the individual elements in the matrix $W^{[l]}$.
     $$
     ||W^{[l]}||_F^2 = \sum_{i=1}^{n^{[l-1]}} \sum_{j=1}^{n^{[l]}} (W_{ij}^{[l]})^2
@@ -225,6 +229,20 @@ $$
 This term $\left( 1 - \alpha \frac{\lambda}{m} \right)$ is a number slightly less than 1. This means that on every single iteration, the model is *shrinking* or *decaying* the weight matrix $W^{[l]}$ by a small amount, *before* applying the usual update from backpropagation.
 
 This is why **L2 regularization is also called "weight decay"**. It's a very intuitive name for what's happening in the implementation.
+
+
+Think of the weight update as a "tug-of-war" between two different forces on *every single step*:
+
+1.  **The "Fit the Data" Force (Normal Gradient):** This is the `α * (from backprop)` part. Its only job is to minimize the error. If making a weight larger reduces the error, this force will pull the weight to be *larger*.
+2.  **The "Keep it Simple" Force (Regularization):** This is the `(α * λ / m) * W` part. Its only job is to pull the weights smaller, regardless of the data. It's a constant "tax" or "drag" that punishes large weights.
+
+Your scenario is exactly correct:
+* The **normal gradient** might say, "Increase this weight! We need to fit this data point!"
+* The **regularization term** *simultaneously* says, "I don't care. I am shrinking this weight because it's getting big."
+
+The final change to the weight is the result of these two forces combined. The regularization term always provides a "damping" effect, ensuring that even if the normal gradient wants to make a weight large, it has to "prove" that the increase is *really* worth it to overcome the constant penalty.
+
+This is precisely how it prevents the weights from growing too large and overfitting. 
 
 ---
 ### 🤔What is Norm
@@ -317,6 +335,7 @@ The main idea of dropout is, for *every* training example, to randomly "shut dow
   * This means that on every single training step, your model is training a *different*, smaller, "diminished" network.
   * This has a regularizing effect because the network cannot rely on any one specific neuron or feature, as it might be dropped out at random.
 
+![alt text](20251107-1210-32.5096574.gif)
 -----
 
 ### 2️⃣ How to Implement It: "Inverted Dropout"
@@ -324,6 +343,8 @@ The main idea of dropout is, for *every* training example, to randomly "shut dow
 The most common and recommended way to implement dropout is called **Inverted Dropout**. Here's the process for a single layer, say layer 3:
 
 ![alt text](image-6.png)
+
+![alt text](20251107-1211-50.1801551.gif)
 
 1.  **Define `keep_prob`:** This is a hyperparameter, for example, `keep_prob = 0.8`. This means we want to *keep* 80% of the neurons and *drop* 20% of them.
 
