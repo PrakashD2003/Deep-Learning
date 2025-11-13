@@ -520,7 +520,7 @@ Would you like to cover RMSprop next?
 > This version also works, but it's less intuitive. It scales $v_{dW}$ by a factor of $\frac{1}{1-\beta}$, which means your learning rate $\alpha$ will need to be tuned to a different value to compensate. The version taught in the course is cleaner because $\alpha$ and $\beta$ are more independent.
 
 ---
-## Question-  so what is the core intuituin of this why we need this is this specifically die to use of mini-batches we dont have this oscillations porblem in batch gradient descent right? and if we have to solve this oscillations problem using a extra step(calculating wights moving average of wights to smooth the the updation curve or descent curve) is'nt just the batch gradient descent will be better and faster ? 
+## ❓**Question-**  so what is the core intuituin of this why we need this is this specifically die to use of mini-batches we dont have this oscillations porblem in batch gradient descent right? and if we have to solve this oscillations problem using a extra step(calculating wights moving average of wights to smooth the the updation curve or descent curve) is'nt just the batch gradient descent will be better and faster ? 
 
 That is a *fantastic* set of questions, and you've hit on the absolute core of the trade-offs.
 
@@ -650,7 +650,7 @@ So far, we have two powerful algorithms:
 
 ---
 
-### **Questions-**  but momentum also dampens the vertical direction oscillations right? and and by using the moving average for updatation rather the the actual gradient it prevents gradients from moving too much up or down but how does it provides acceleration? and if rmsprop also dampens to oscillations how it is different from momemtum?
+### ❓**Questions-**  but momentum also dampens the vertical direction oscillations right? and and by using the moving average for updatation rather the the actual gradient it prevents gradients from moving too much up or down but how does it provides acceleration? and if rmsprop also dampens to oscillations how it is different from momemtum?
 
 **Answer:**
  You are asking the *perfect* questions. This is the most important distinction to understand, and you are absolutely right that Momentum also dampens oscillations.
@@ -702,7 +702,7 @@ Think of your algorithm as a car. The "canyon" has steep walls (vertical) and a 
 
 This is why the next algorithm, **Adam**, is so powerful. It **combines** the "heavy car" (Momentum) with the "smart brakes" (RMSprop) to create the best of both worlds.
 
-### **Question-** in rmsprop optimization algo how it decides which parameter to damp and which to boost? i mean if we take the course intuition we want to damp the vertical oscillations that is db and boost the horizontal oscillations that is dW but how it decides which to dam p and which to boost what if it damps the dW and boost the db?
+### ❓ **Question-** in rmsprop optimization algo how it decides which parameter to damp and which to boost? i mean if we take the course intuition we want to damp the vertical oscillations that is db and boost the horizontal oscillations that is dW but how it decides which to dam p and which to boost what if it damps the dW and boost the db?
 
 **Anwser:**
  This is the most critical question about RMSprop, and it's a brilliant one.
